@@ -1,0 +1,12 @@
+{
+  "extends": "@ebuchi-monorepo/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@ebuchi-infra/*": ["./src/infra/*"],
+      "@ebuchi-common/*": ["./src/common/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}

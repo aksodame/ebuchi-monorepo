@@ -1,0 +1,6 @@
+include:
+  - infra/redis/docker-compose.yml
+  - infra/prometheus/docker-compose.yml
+  - infra/grafana/docker-compose.yml
+  - infra/glitchtip/docker-compose.yml
+  - infra/lavalink/docker-compose.yml

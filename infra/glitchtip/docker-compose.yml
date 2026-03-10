@@ -1,0 +1,68 @@
+x-env: &env
+  DATABASE_URL: postgresql://${GLITCHTIP_DB_USER}:${GLITCHTIP_DB_PASSWORD}@glitchtip-postgres:5432/${GLITCHTIP_DB_NAME}
+  SECRET_KEY: ${GLITCHTIP_SECRET_KEY}
+  PORT: ${GLITCHTIP_PORT}
+  GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN}
+  DEFAULT_FROM_EMAIL: ${GLITCHTIP_FROM_EMAIL}
+  EMAIL_URL: ${GLITCHTIP_EMAIL_URL}
+  REDIS_URL: ${GLITCHTIP_REDIS_URL}
+  CELERY_WORKER_AUTOSCALE: ${GLITCHTIP_CELERY_AUTOSCALE}
+  CELERY_WORKER_MAX_TASKS_PER_CHILD: ${GLITCHTIP_CELERY_MAX_TASKS_PER_CHILD}
+  DJANGO_SUPERUSER_EMAIL: ${GLITCHTIP_SUPERUSER_EMAIL}
+  DJANGO_SUPERUSER_PASSWORD: ${GLITCHTIP_SUPERUSER_PASSWORD}
+
+services:
+  glitchtip-postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${GLITCHTIP_DB_NAME}
+      POSTGRES_USER: ${GLITCHTIP_DB_USER}
+      POSTGRES_PASSWORD: ${GLITCHTIP_DB_PASSWORD}
+    volumes:
+      - glitchtip_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${GLITCHTIP_DB_USER}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  glitchtip-migrate:
+    image: glitchtip/glitchtip
+    command: >
+      sh -c "./manage.py migrate &&
+             ./manage.py createsuperuser --noinput || true"
+    environment: *env
+    profiles: [migrate]
+    depends_on:
+      glitchtip-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
+
+  glitchtip-web:
+    image: glitchtip/glitchtip
+    restart: unless-stopped
+    ports:
+      - '${GLITCHTIP_PORT}:${GLITCHTIP_PORT}'
+    environment: *env
+    depends_on:
+      glitchtip-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip
+    command: ./bin/run-celery-with-beat.sh
+    restart: unless-stopped
+    environment: *env
+    depends_on:
+      glitchtip-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  glitchtip_postgres_data:

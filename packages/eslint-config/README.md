@@ -1,0 +1,1 @@
+# `@ebuchi-bot/eslint-config`

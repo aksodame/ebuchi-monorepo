@@ -1,0 +1,20 @@
+{
+  "name": "ebuchi-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "dotenv -e .env -- turbo run build",
+    "dev": "dotenv -e .env -- turbo run dev",
+    "lint": "turbo run lint",
+    "deploy": "dotenv -e .env -- bash ./scripts/deploy.sh",
+    "deploy:setup": "dotenv -e .env -- bash ./scripts/deploy.sh --sync-env --setup-firewall --setup-infra --migrate-glitchtip"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0",
+    "turbo": "^2.8.10",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=24"
+  }
+}
