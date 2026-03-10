@@ -82,8 +82,7 @@ Fill in your VPS connection details and adjust defaults as needed.
 | `VPS_HOST` | VPS IP or hostname |
 | `VPS_USER` | SSH user |
 | `SSH_PORT` | SSH port (default `22`) |
-| `SSH_KEY` | Path to private key (takes priority over password) |
-| `SSH_PASSWORD` | Password auth — requires `sshpass` (`brew install sshpass`) |
+| `SSH_KEY` | Path to private key (or leave unset to use SSH agent) |
 | `IMAGE_NAME` | Docker image name (default `ebuchi-server`) |
 | `IMAGE_TAG` | Docker image tag (default `latest`) |
 | `CONTAINER_NAME` | Container name on VPS (default `ebuchi-server`) |
@@ -138,3 +137,15 @@ pnpm deploy:setup
 pnpm deploy:setup                                             # all steps (shortcut)
 pnpm deploy                                                   # redeploy only (shortcut)
 ```
+
+### Reload env without rebuilding
+
+Use this when you only changed `.env` on the local machine and want to push it to the VPS and restart everything without rebuilding or re-transferring the Docker image.
+
+```bash
+pnpm deploy:reload-env
+# or directly:
+./scripts/reload-env.sh
+```
+
+This syncs `.env` to the VPS, force-recreates all infra containers (so they pick up new env), and restarts the app container with the existing image.

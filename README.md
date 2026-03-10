@@ -51,6 +51,7 @@ infra/
   glitchtip/          # GlitchTip docker-compose
 scripts/
   deploy.sh           # VPS deployment script
+  reload-env.sh       # Sync .env to VPS and restart all containers
 ```
 
 ## Prerequisites
@@ -113,11 +114,12 @@ pnpm dev
 ## Scripts
 
 ```bash
-pnpm dev           # Run all apps in watch mode
-pnpm build         # Build all apps
-pnpm lint          # Lint all apps
-pnpm deploy        # Build image and deploy to VPS
-pnpm deploy:setup  # Full deploy: sync env + firewall + infra + deploy
+pnpm dev                # Run all apps in watch mode
+pnpm build              # Build all apps
+pnpm lint               # Lint all apps
+pnpm deploy             # Build image and deploy to VPS
+pnpm deploy:setup       # Full deploy: sync env + firewall + infra + deploy
+pnpm deploy:reload-env  # Sync .env to VPS and restart all containers (no image rebuild)
 ```
 
 ## Deployment

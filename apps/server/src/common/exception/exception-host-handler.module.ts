@@ -6,10 +6,7 @@ import {ExceptionHostHandlerRegistry} from './exception-host-handler.registry';
 
 @Global()
 @Module({
-  providers: [
-    ExceptionHostHandlerRegistry,
-    {provide: APP_FILTER, useClass: ExceptionHostHandlerFilter},
-  ],
+  providers: [ExceptionHostHandlerRegistry, {provide: APP_FILTER, useClass: ExceptionHostHandlerFilter}],
   exports: [ExceptionHostHandlerRegistry],
 })
 export class ExceptionHostHandlerModule {}
